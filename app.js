@@ -62,5 +62,46 @@ $("#platform")?.addEventListener("change",renderGames);
 const themeButton=$("#themeToggle");
 if(localStorage.getItem("gamehub-theme")==="light")document.documentElement.dataset.theme="light";
 if(themeButton)themeButton.onclick=()=>{const light=document.documentElement.dataset.theme==="light";document.documentElement.dataset.theme=light?"dark":"light";localStorage.setItem("gamehub-theme",light?"dark":"light");themeButton.textContent=light?"☾":"☀"};
+
+// --- Глобальная озвучка интерфейса при наведении и фокусе ---
+let hoverSpeakTimer=null;
+let lastHoverElement=null;
+let lastHoverAt=0;
+
+function getSpeakableText(element){
+  if(!element || element.closest("[aria-hidden=\"true\"]")) return "";
+  if(element.matches("input, textarea")) return element.getAttribute("aria-label") || element.getAttribute("placeholder") || "";
+  if(element.matches("select")) return element.getAttribute("aria-label") || element.options[element.selectedIndex]?.text || "";
+  const labelled=element.getAttribute("aria-label");
+  if(labelled) return labelled;
+  return (element.innerText || element.textContent || "").replace(/\\s+/g," ").trim();
+}
+
+function speakHovered(element){
+  const now=Date.now();
+  if(!element || element===lastHoverElement && now-lastHoverAt<1800) return;
+  const text=getSpeakableText(element);
+  if(!text || text.length<2 || text.length>700) return;
+  lastHoverElement=element;
+  lastHoverAt=now;
+  speak(text,element.matches("button,[role=\"button\"]") ? element : null);
+}
+
+document.addEventListener("mouseover",(event)=>{
+  const element=event.target.closest("a,button,input,select,textarea,h1,h2,h3,p,label,.tag,.game-card,.voice-panel,.hero");
+  if(!element || element.contains(event.relatedTarget)) return;
+  clearTimeout(hoverSpeakTimer);
+  hoverSpeakTimer=setTimeout(()=>speakHovered(element),350);
+});
+
+document.addEventListener("mouseout",(event)=>{
+  if(!event.relatedTarget) clearTimeout(hoverSpeakTimer);
+});
+
+document.addEventListener("focusin",(event)=>{
+  const element=event.target.closest("a,button,input,select,textarea,h1,h2,h3,p,label,.tag,.game-card");
+  if(element) speakHovered(element);
+});
+
 document.querySelectorAll("[data-year]").forEach(e=>e.textContent=new Date().getFullYear());
 renderGames();
