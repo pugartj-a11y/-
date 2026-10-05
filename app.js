@@ -1,20 +1,66 @@
-const MOVIES=[
-{id:"interstellar",title:"Интерстеллар",year:2014,genre:"Фантастика",mood:["smart","epic"],rating:"8.7",duration:"2ч 49м",desc:"Команда исследователей отправляется через космический портал в поисках нового дома для человечества.",letter:"I",shade:"#3b4147"},
-{id:"parasite",title:"Паразиты",year:2019,genre:"Триллер",mood:["tense","smart"],rating:"8.5",duration:"2ч 12м",desc:"Две семьи из совершенно разных миров оказываются связаны цепочкой неожиданных событий.",letter:"P",shade:"#454545"},
-{id:"inception",title:"Начало",year:2010,genre:"Фантастика",mood:["smart","tense"],rating:"8.8",duration:"2ч 28м",desc:"Профессиональный вор проникает в сны людей и получает почти невозможное задание.",letter:"I",shade:"#30343a"},
-{id:"whiplash",title:"Одержимость",year:2014,genre:"Драма",mood:["tense","smart"],rating:"8.5",duration:"1ч 47м",desc:"Молодой музыкант сталкивается с безжалостным преподавателем и проверкой собственных границ.",letter:"W",shade:"#4b4540"},
-{id:"matrix",title:"Матрица",year:1999,genre:"Фантастика",mood:["smart","epic"],rating:"8.7",duration:"2ч 16м",desc:"Хакер узнаёт, что привычная реальность устроена совсем не так, как кажется.",letter:"M",shade:"#303934"},
-{id:"grand-budapest",title:"Отель «Гранд Будапешт»",year:2014,genre:"Комедия",mood:["warm"],rating:"8.1",duration:"1ч 39м",desc:"Приключения консьержа легендарного европейского отеля и его молодого помощника.",letter:"G",shade:"#514c4a"},
-{id:"spirited-away",title:"Унесённые призраками",year:2001,genre:"Анимация",mood:["warm","epic"],rating:"8.6",duration:"2ч 05м",desc:"Девочка оказывается в загадочном мире духов и пытается вернуть своих родителей.",letter:"S",shade:"#55504a"},
-{id:"mad-max",title:"Безумный Макс: Дорога ярости",year:2015,genre:"Приключения",mood:["epic","tense"],rating:"8.1",duration:"2ч 00м",desc:"Побег через бескрайнюю пустыню превращается в непрерывную гонку на выживание.",letter:"X",shade:"#55463a"},
-{id:"everything",title:"Всё везде и сразу",year:2022,genre:"Комедия",mood:["warm","smart","epic"],rating:"7.7",duration:"2ч 19м",desc:"Обычная женщина получает шанс увидеть бесчисленные версии собственной жизни.",letter:"E",shade:"#4b4b4b"}
+const GAMES=[
+{id:"bg3",title:"Baldur's Gate 3",year:2023,genre:"RPG",platforms:["PC","PS5","Xbox"],rating:"9.6",desc:"Глубокая ролевая игра с огромным миром, тактическими боями и решениями, которые меняют историю.",mark:"BG3",shade:"#392f4d"},
+{id:"elden-ring",title:"Elden Ring",year:2022,genre:"Action",platforms:["PC","PS5","Xbox"],rating:"9.4",desc:"Эпическое приключение в мрачном открытом мире, где исследование и сложные сражения идут рука об руку.",mark:"ER",shade:"#4b3b2d"},
+{id:"zelda",title:"The Legend of Zelda: Tears of the Kingdom",year:2023,genre:"Adventure",platforms:["Switch"],rating:"9.5",desc:"Исследуй небеса, поверхность и подземелья Хайрула, собирая необычные устройства и раскрывая тайны мира.",mark:"Z",shade:"#33473f"},
+{id:"cyberpunk",title:"Cyberpunk 2077",year:2020,genre:"RPG",platforms:["PC","PS5","Xbox"],rating:"8.9",desc:"Футуристический город, наёмник Ви и история о свободе выбора среди корпораций, имплантов и опасных сделок.",mark:"CP",shade:"#4b4530"},
+{id:"hades",title:"Hades",year:2020,genre:"Indie",platforms:["PC","Switch"],rating:"9.0",desc:"Динамичный roguelike о побеге из подземного мира, где каждое новое прохождение открывает часть истории.",mark:"H",shade:"#4a3035"},
+{id:"civilization",title:"Sid Meier's Civilization VI",year:2016,genre:"Strategy",platforms:["PC","Switch"],rating:"8.8",desc:"Построй цивилизацию с нуля, исследуй технологии, развивай города и решай судьбу своего народа.",mark:"VI",shade:"#3f4334"}
 ];
+
 const $=s=>document.querySelector(s);
-function card(m){return '<a class="movie-card" href="movie.html?id='+m.id+'"><div class="movie-poster" data-letter="'+m.letter+'" style="--shade:'+m.shade+'"><b>★ '+m.rating+'</b></div><div class="movie-info"><h3>'+m.title+'</h3><p>'+m.year+' · '+m.duration+'</p><div class="tags"><span class="tag">'+m.genre+'</span></div></div></a>'}
-function renderCatalog(){const box=$("#catalog");if(!box)return;const q=($("#search")?.value||"").toLowerCase();const g=$("#genre")?.value||"all";const decade=$("#year")?.value||"all";const list=MOVIES.filter(m=>(!q||m.title.toLowerCase().includes(q))&&(g==="all"||m.genre===g)&&(decade==="all"||Math.floor(m.year/10)*10===Number(decade)));box.innerHTML=list.length?list.map(card).join(''):'<div class="empty">Ничего не найдено. Попробуй другой запрос.</div>'}
-function renderFeatured(){const box=$("#featured");if(box)box.innerHTML=MOVIES.slice(0,3).map(card).join('')}
-function renderDetail(){const box=$("#movieDetail");if(!box)return;const id=new URLSearchParams(location.search).get("id");const m=MOVIES.find(x=>x.id===id)||MOVIES[0];document.title="NOIR — "+m.title;box.innerHTML='<div class="detail-poster">'+m.letter+'</div><div><p class="eyebrow">'+m.genre+' · '+m.year+'</p><h1>'+m.title+'</h1><p class="meta">★ '+m.rating+' &nbsp; · &nbsp; '+m.duration+'</p><p class="lead">'+m.desc+'</p><div class="tags"><span class="tag">'+m.genre+'</span><span class="tag">'+m.year+'</span></div><a class="btn watch" target="_blank" rel="noopener" href="https://www.justwatch.com/us/search?q='+encodeURIComponent(m.title)+'">Где смотреть легально →</a></div>'}
-function pick(){const mood=$("#mood")?.value||"any";const genre=$("#pickGenre")?.value||"any";let list=MOVIES.filter(m=>(mood==="any"||m.mood.includes(mood))&&(genre==="any"||m.genre===genre));if(!list.length)list=MOVIES;const m=list[Math.floor(Math.random()*list.length)];const box=$("#pickResult");box.hidden=false;box.innerHTML=card(m)+'<p style="color:#888;font-size:12px;margin-top:10px">Совет основан на выбранных параметрах. Можно нажать ещё раз.</p>'}
-const themeButton=$("#themeToggle");if(localStorage.getItem("noir-theme")==="light")document.documentElement.dataset.theme="light";if(themeButton)themeButton.onclick=()=>{const light=document.documentElement.dataset.theme==="light";document.documentElement.dataset.theme=light?"dark":"light";localStorage.setItem("noir-theme",light?"dark":"light");themeButton.textContent=light?"☾":"☀"};
+let currentAudio=null;
+
+function gameCard(g){
+  const text=`${g.title}. ${g.year} год. Жанр: ${g.genre}. Рейтинг: ${g.rating} из 10. ${g.desc}`;
+  return `<article class="game-card">
+    <div class="game-art" style="--shade:${g.shade}"><span>${g.mark}</span><b>★ ${g.rating}</b></div>
+    <div class="game-info"><div><h3>${g.title}</h3><p>${g.year} · ${g.genre}</p></div>
+      <button class="speak-btn" type="button" aria-label="Озвучить ${g.title}" data-speak="${encodeURIComponent(text)}">🔊</button>
+      <p class="desc">${g.desc}</p>
+      <div class="tags">${g.platforms.map(p=>`<span class="tag">${p}</span>`).join("")}</div>
+    </div>
+  </article>`;
+}
+
+function renderGames(){
+  const box=$("#gamesGrid"); if(!box)return;
+  const q=($("#search")?.value||"").toLowerCase();
+  const genre=$("#genre")?.value||"all", platform=$("#platform")?.value||"all";
+  const list=GAMES.filter(g=>(!q||g.title.toLowerCase().includes(q))&&(genre==="all"||g.genre===genre)&&(platform==="all"||g.platforms.includes(platform)));
+  box.innerHTML=list.length?list.map(gameCard).join(""):'<div class="empty">Ничего не найдено. Попробуй другой фильтр.</div>';
+  box.querySelectorAll("[data-speak]").forEach(btn=>btn.addEventListener("click",()=>speak(decodeURIComponent(btn.dataset.speak),btn)));
+}
+
+async function speak(text,button){
+  stopAudio();
+  if(button){button.classList.add("loading");button.disabled=true;}
+  try{
+    const res=await fetch("/api/tts",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text})});
+    if(!res.ok)throw new Error("TTS request failed");
+    const data=await res.json();
+    if(!data.audioContent)throw new Error("No audio returned");
+    const bytes=Uint8Array.from(atob(data.audioContent),c=>c.charCodeAt(0));
+    const blob=new Blob([bytes],{type:"audio/mpeg"});
+    currentAudio=new Audio(URL.createObjectURL(blob));
+    currentAudio.onended=()=>{if(button){button.classList.remove("loading");button.disabled=false;}};
+    currentAudio.play();
+  }catch(err){
+    console.error(err);
+    alert("Не удалось озвучить текст. Проверь, запущен ли сервер и задан ли INWORLD_API_KEY.");
+    if(button){button.classList.remove("loading");button.disabled=false;}
+  }
+}
+function stopAudio(){if(currentAudio){currentAudio.pause();currentAudio=null;}}
+$("#speakPage")?.addEventListener("click",()=>{
+  const text="GAMEHUB. Игры, которые говорят с тобой. Каталог популярных игр с удобной озвучкой интерфейса. Нажми на кнопку динамика у любой карточки, чтобы услышать описание.";
+  speak(text,$("#speakPage"));
+});
+$("#stopSpeech")?.addEventListener("click",stopAudio);
+$("#search")?.addEventListener("input",renderGames);
+$("#genre")?.addEventListener("change",renderGames);
+$("#platform")?.addEventListener("change",renderGames);
+const themeButton=$("#themeToggle");
+if(localStorage.getItem("gamehub-theme")==="light")document.documentElement.dataset.theme="light";
+if(themeButton)themeButton.onclick=()=>{const light=document.documentElement.dataset.theme==="light";document.documentElement.dataset.theme=light?"dark":"light";localStorage.setItem("gamehub-theme",light?"dark":"light");themeButton.textContent=light?"☾":"☀"};
 document.querySelectorAll("[data-year]").forEach(e=>e.textContent=new Date().getFullYear());
-$("#search")?.addEventListener("input",renderCatalog);$("#genre")?.addEventListener("change",renderCatalog);$("#year")?.addEventListener("change",renderCatalog);$("#pickButton")?.addEventListener("click",pick);renderFeatured();renderCatalog();renderDetail();
+renderGames();
